@@ -327,6 +327,53 @@ The service is configured to start automatically when the computer starts.
 To start the service manually open **Services** in **Computer Management** and
 start the **Radicale** service.
 
+### oidc reverse proxy
+
+OIDC and oauth2 enable the use of Single-Sign-On (SSO) authentication
+mechanisms that have a familiar user experience.
+
+Typically OIDC would involve integration with a Identity Mangement System (IDM)
+such as [kanidm](https://kanidm.github.io) or
+[keycloak](https://www.keycloak.org/).
+
+The simplest integration of Radicale with an IDM is to use a reverse proxy such
+as [oauth2-proxy](https://oauth2-proxy.github.io/oauth2-proxy/). This follows a
+standard reverse-proxy-authentication flow where the proxy handles all
+authentication and then only forwards authenticated requests to Radicale.
+
+The Radicale configuration is manged by setting
+`http_x_auth_request_preferred_username`. A sample `oauth2_proxy` invokation
+is:
+
+```sh
+
+oauth2-proxy \
+    --approval-prompt='force' \
+    --client-id='radicale' \
+    --client-secret-file='<client secret from idm configuration>' \
+    --cookie-expire='168h0m0s' \
+    --cookie-httponly=true \
+    --cookie-name='_oauth2_proxy' \
+    --cookie-secret='<cookie secret>' \
+    --cookie-secure=false \
+    --email-domain='mudshark.org' \
+    --http-address='https://0.0.0.0:5232' \
+    --oidc-issuer-url='https://idm.example.org/oauth2/openid/radicale' \
+    --pass-access-token=false \
+    --pass-basic-auth=true \
+    --pass-host-header=true \
+    --provider='oidc' \
+    --provider-display-name='radicale caldav server' \
+    --proxy-prefix='/oauth2' \
+    --redirect-url='radicale.example.org/oauth2/callback' \
+    --request-logging=true \
+    --reverse-proxy=false \
+    --set-xauthrequest=false \
+    --upstream='http://127.0.0.1:5232'
+```
+
+See IDM and oauth2-proxy documentation on how to acquire `<client secret>`.
+
 ### Reverse Proxy
 
 When a reverse proxy is used, and Radicale should be made available at a path

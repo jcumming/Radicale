@@ -35,6 +35,7 @@ from radicale import config, types, utils
 from radicale.log import logger
 
 INTERNAL_TYPES: Sequence[str] = ("none", "remote_user", "http_x_remote_user",
+                                 "http_x_auth_request_preferred_username",
                                  "denyall",
                                  "htpasswd")
 
