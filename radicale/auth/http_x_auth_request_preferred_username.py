@@ -19,7 +19,7 @@
 
 """
 Authentication backend that takes the username from the
-``X-Auth-Request-Preferred-Username`` header.
+``X-Forwarded-Preferred-Username`` header.
 
 It's intended for use with a reverse proxy. Be aware as this will be insecure
 if the reverse proxy is not configured properly.
@@ -36,4 +36,5 @@ class Auth(none.Auth):
 
     def get_external_login(self, environ: types.WSGIEnviron) -> Union[
             Tuple[()], Tuple[str, str]]:
-        return environ.get("HTTP_X_AUTH_REQUEST_PREFERRED_USERNAME", ""), ""
+        return environ.get("HTTP_X_FORWARDED_PREFERRED_USERNAME", ""), ""
+# X-Forwarded-Preferred-Username

@@ -167,7 +167,7 @@ class TestBaseAuthRequests(BaseTest):
     <prop>
         <current-user-principal />
     </prop>
-</propfind>""", HTTP_X_AUTH_REQUEST_PREFERRED_USERNAME="test")
+</propfind>""", HTTP_X_FORWARDED_PREFERRED_USERNAME="test")
         assert responses is not None
         response = responses["/"]
         assert not isinstance(response, int)
