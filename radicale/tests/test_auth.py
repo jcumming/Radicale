@@ -159,6 +159,23 @@ class TestBaseAuthRequests(BaseTest):
         href_element = prop.find(xmlutils.make_clark("D:href"))
         assert href_element is not None and href_element.text == "/test/"
 
+    def http_x_auth_request_preferred_username(self) -> None:
+        self.configure({"auth": {"type": "http_x_auth_request_preferred_username"}})
+        _, responses = self.propfind("/", """\
+<?xml version="1.0" encoding="utf-8"?>
+<propfind xmlns="DAV:">
+    <prop>
+        <current-user-principal />
+    </prop>
+</propfind>""", HTTP_X_AUTH_REQUEST_PREFERRED_USERNAME="test")
+        assert responses is not None
+        response = responses["/"]
+        assert not isinstance(response, int)
+        status, prop = response["D:current-user-principal"]
+        assert status == 200
+        href_element = prop.find(xmlutils.make_clark("D:href"))
+        assert href_element is not None and href_element.text == "/test/"
+
     def test_custom(self) -> None:
         """Custom authentication."""
         self.configure({"auth": {"type": "radicale.tests.custom.auth"}})
